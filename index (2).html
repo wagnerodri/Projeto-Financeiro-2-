@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolua suas Finanças - Tela Principal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #f2f2f2, #f2f2f2);
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: rgb(96, 179, 76);
+            color: #ffffff;
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.356);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1005;
+            transition: width 0.3s;
+        }
+
+        .sidebar h2 {
+            color: #ffffff;
+            margin-top: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .sidebar img {
+            display: block;
+            margin: 0 auto;
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            background-color: rgb(96, 179, 76);
+            padding: 15px;
+            border-radius: 0px;
+            margin-bottom: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 2px 4px #00000050;
+            display: flex;
+            align-items: center;
+            width: 210px;
+        }
+
+        .menu-item.active {
+            background-color: #00000050;
+            transform: translateY(-2px);
+        }
+
+        .menu-item i {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 260px;
+            overflow-y: auto;
+            transition: margin-left 0.3s;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        h1 {
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .chart {
+            flex: 1;
+            min-width: 300px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .chart h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .card {
+            flex: 1 1 calc(25% - 40px);
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .card i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #28a745;
+        }
+
+        .card-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .card .more-btn,
+        .card .view-btn {
+            background-color: #007bff00;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .card .more-btn:hover,
+        .card .view-btn:hover {
+            background-color: #91c586d2;
+        }
+
+        .card .entry-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #218838;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+
+        .notifications {
+            margin-bottom: 20px;
+        }
+
+        .notification {
+            padding: 10px 20px;
+            border-left: 5px solid;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .modal-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .modal-content th,
+        .modal-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .modal-content th {
+            background-color: #f2f2f2;
+        }
+
+        .modal-content .add-row-btn,
+        .modal-content .save-btn,
+        .modal-content .close-btn,
+        .modal-content .edit-btn,
+        .modal-content .delete-btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            margin-right: 10px;
+            border: none;
+            color: white;
+        }
+
+        .modal-content .add-row-btn {
+            background-color: #007bff;
+        }
+
+        .modal-content .add-row-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content .save-btn {
+            background-color: #28a745;
+        }
+
+        .modal-content .save-btn:hover {
+            background-color: #218838;
+        }
+
+        .modal-content .close-btn {
+            background-color: #dc3545;
+        }
+
+        .modal-content .close-btn:hover {
+            background-color: #c82333;
+        }
+
+        .modal-content .edit-btn {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .modal-content .edit-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .modal-content .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .modal-content .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .chart-container .chart .details {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .launch-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            table-layout: fixed;
+        }
+
+        .launch-table th,
+        .launch-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+
+        .launch-table th {
+            background-color: rgb(96, 179, 76);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .launch-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .launch-table .actions {
+            text-align: center;
+        }
+
+        .launch-table .actions button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+            color: rgb(0, 0, 0);
+            background-color: rgb(96, 179, 76);
+        }
+
+        .launch-table .actions .edit-btn {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .launch-table .actions .edit-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .launch-table .actions .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .launch-table .actions .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .filter-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filter-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .filter-dropdown-content input {
+            margin: 5px;
+        }
+
+        .filter-dropdown-content label {
+            display: block;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .filter-dropdown-content label:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .launch-table input[type="text"],
+        .launch-table input[type="number"],
+        .launch-table input[type="date"] {
+            width: calc(100% - 16px);
+            box-sizing: border-box;
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <img src="https://i.imgur.com/MsLRz0s.png" alt="logo" id="logo">
+        <h2>Evolua suas Finanças</h2>
+        <div class="menu-item" onclick="showSection('overview')"><i class="fas fa-tachometer-alt"></i> Visão Geral</div>
+        <div class="menu-item" onclick="showSection('resultado')"><i class="fas fa-dollar-sign"></i> Contas de Resultado
+        </div>
+        <div class="menu-item" onclick="showSection('patrimonio')"><i class="fas fa-money-bill-wave"></i> Contas de
+            Patrimônio</div>
+        <div class="menu-item" onclick="showSection('lancamentos')"><i class="fas fa-chart-line"></i> Lançamentos</div>
+        <div class="menu-item" onclick="showSection('planejamento')"><i class="fas fa-credit-card"></i> Planejamento
+        </div>
+        <div class="menu-item" onclick="showSection('resultadoAno')"><i class="fas fa-money-check-alt"></i> Resultado
+            por Ano</div>
+        <div class="menu-item" onclick="showSection('balanco')"><i class="fas fa-balance-scale"></i> Balanço</div>
+        <div class="menu-item" onclick="showSection('previstoVsRealizado')"><i class="fas fa-tasks"></i> Previsto vs
+            Realizado</div>
+        <div class="menu-item" onclick="showSection('fluxoDeCaixa')"><i class="fas fa-cash-register"></i> Fluxo de Caixa
+        </div>
+        <div class="menu-item" onclick="showSection('configuracoes')"><i class="fas fa-cogs"></i> Configurações</div>
+        <div class="menu-item" onclick="showSection('suporte')"><i class="fas fa-headset"></i> Suporte ao Cliente</div>
+    </div>
+    <div class="content">
+        <div id="overview" class="content-section active">
+            <h1>Bem-vindo ao Evolua suas Finanças, <span id="userName">Cláudio</span>!</h1>
+            <hr>
+            <div class="chart-container">
+                <div class="chart">
+                    <h3>Saldo Mensal</h3>
+                    <canvas id="balanceChart"></canvas>
+                    <div class="details">Saldo atual: R$ 5.200,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Transações Recentes</h3>
+                    <canvas id="transactionsChart"></canvas>
+                    <div class="details">Total Transações: R$ 650,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Gráfico de Cascata</h3>
+                    <canvas id="waterfallChart"></canvas>
+                    <div class="details">Saldo Final: R$ 3.500,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Despesas e Receitas</h3>
+                    <canvas id="expensesIncomeChart"></canvas>
+                    <div class="details">Despesas: R$ 3.000,00 | Receitas: R$ 7.000,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Desempenho dos Investimentos</h3>
+                    <canvas id="investmentPerformanceChart"></canvas>
+                    <div class="details">Retorno Médio: 7% a.a.</div>
+                </div>
+                <div class="chart">
+                    <h3>Pagamentos de Empréstimos</h3>
+                    <canvas id="loansChart"></canvas>
+                    <div class="details">Pagamentos Totais: R$ 1.000,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Economia Mensal</h3>
+                    <canvas id="savingsChart"></canvas>
+                    <div class="details">Economia Total: R$ 1.200,00</div>
+                </div>
+                <div class="chart">
+                    <h3>Comparativo de Despesas</h3>
+                    <canvas id="expensesComparisonChart"></canvas>
+                    <div class="details">Comparativo: 30% Alimentação, 20% Transporte, 50% Outros</div>
+                </div>
+                <div class="chart">
+                    <h3>Projeção de Receita</h3>
+                    <canvas id="revenueProjectionChart"></canvas>
+                    <div class="details">Projeção: Crescimento de 10% a.a.</div>
+                </div>
+            </div>
+        </div>
+        <div id="resultado" class="content-section">
+            <h1>Contas de Resultado</h1>
+            <hr>
+            <div class="section-title">Rendas</div>
+            <div class="card-container">
+                <div class="card" data-title="Renda Principal">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Renda Principal</h3>
+                    <p>Descrição da Renda Principal</p>
+                    <div class="entry-count" id="count-Renda Principal">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Renda Principal', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Renda Principal')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Renda Extra">
+                    <i class="fas fa-coins"></i>
+                    <h3>Renda Extra</h3>
+                    <p>Descrição da Renda Extra</p>
+                    <div class="entry-count" id="count-Renda Extra">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Renda Extra', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Renda Extra')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Renda Passiva">
+                    <i class="fas fa-piggy-bank"></i>
+                    <h3>Renda Passiva</h3>
+                    <p>Descrição da Renda Passiva</p>
+                    <div class="entry-count" id="count-Renda Passiva">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Renda Passiva', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Renda Passiva')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Outras Rendas">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Outras Rendas</h3>
+                    <p>Descrição de Outras Rendas</p>
+                    <div class="entry-count" id="count-Outras Rendas">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Outras Rendas', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Outras Rendas')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="section-title">Gastos</div>
+            <div class="card-container">
+                <div class="card" data-title="Alimentação">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Alimentação</h3>
+                    <p>Descrição dos gastos com Alimentação</p>
+                    <div class="entry-count" id="count-Alimentação">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Alimentação', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Alimentação')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Transporte">
+                    <i class="fas fa-bus"></i>
+                    <h3>Transporte</h3>
+                    <p>Descrição dos gastos com Transporte</p>
+                    <div class="entry-count" id="count-Transporte">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Transporte', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Transporte')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Lazer">
+                    <i class="fas fa-film"></i>
+                    <h3>Lazer</h3>
+                    <p>Descrição dos gastos com Lazer</p>
+                    <div class="entry-count" id="count-Lazer">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Lazer', false)"><i class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Lazer')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Educação">
+                    <i class="fas fa-book"></i>
+                    <h3>Educação</h3>
+                    <p>Descrição dos gastos com Educação</p>
+                    <div class="entry-count" id="count-Educação">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Educação', false)"><i class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Educação')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Vestuário">
+                    <i class="fas fa-tshirt"></i>
+                    <h3>Vestuário</h3>
+                    <p>Descrição dos gastos com Vestuário</p>
+                    <div class="entry-count" id="count-Vestuário">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Vestuário', false)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Vestuário')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Moradia">
+                    <i class="fas fa-home"></i>
+                    <h3>Moradia</h3>
+                    <p>Descrição dos gastos com Moradia</p>
+                    <div class="entry-count" id="count-Moradia">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Moradia', false)"><i class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Moradia')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Saúde">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Saúde</h3>
+                    <p>Descrição dos gastos com Saúde</p>
+                    <div class="entry-count" id="count-Saúde">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Saúde', false)"><i class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Saúde')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Outros">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <h3>Outros</h3>
+                    <p>Descrição de outros gastos</p>
+                    <div class="entry-count" id="count-Outros">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Outros', false)"><i class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Outros')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="patrimonio" class="content-section">
+            <h1>Contas de Patrimônio</h1>
+            <hr>
+            <div class="section-title">Data de Início do Uso do Sistema</div>
+            <input type="date" id="startDate" onchange="saveStartDate()">
+            <div id="displayStartDate"></div>
+            <hr>
+            <div class="section-title">Ativos</div>
+            <div class="card-container">
+                <div class="card" data-title="Disponibilidades">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Disponibilidades</h3>
+                    <p>Descrição das disponibilidades</p>
+                    <div class="entry-count" id="count-Disponibilidades">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Disponibilidades', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Disponibilidades')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Investimentos">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Investimentos</h3>
+                    <p>Descrição dos investimentos</p>
+                    <div class="entry-count" id="count-Investimentos">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Investimentos', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Investimentos')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Imobilizado">
+                    <i class="fas fa-building"></i>
+                    <h3>Imobilizado</h3>
+                    <p>Descrição do imobilizado</p>
+                    <div class="entry-count" id="count-Imobilizado">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Imobilizado', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Imobilizado')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card">
+                    <i class="fas fa-balance-scale"></i>
+                    <h3>Total de Ativos</h3>
+                    <p>Descrição do total de ativos</p>
+                    <div class="entry-count" id="count-Total de Ativos">0</div>
+                </div>
+            </div>
+            <div class="section-title">Passivos</div>
+            <div class="card-container">
+                <div class="card" data-title="Cartões">
+                    <i class="fas fa-credit-card"></i>
+                    <h3>Cartões</h3>
+                    <p>Descrição dos cartões</p>
+                    <div class="entry-count" id="count-Cartões">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Cartões', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Cartões')"><i class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Empréstimos">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <h3>Empréstimos</h3>
+                    <p>Descrição dos empréstimos</p>
+                    <div class="entry-count" id="count-Empréstimos">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Empréstimos', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Empréstimos')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card" data-title="Financiamentos">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h3>Financiamentos</h3>
+                    <p>Descrição dos financiamentos</p>
+                    <div class="entry-count" id="count-Financiamentos">0</div>
+                    <div class="card-buttons">
+                        <button class="more-btn" onclick="openAddModal('Financiamentos', true)"><i
+                                class="fas fa-plus"></i></button>
+                        <button class="view-btn" onclick="viewContent('Financiamentos')"><i
+                                class="fas fa-eye"></i></button>
+                    </div>
+                </div>
+                <div class="card">
+                    <i class="fas fa-balance-scale"></i>
+                    <h3>Total de Passivos</h3>
+                    <p>Descrição do total de passivos</p>
+                    <div class="entry-count" id="count-Total de Passivos">0</div>
+                </div>
+            </div>
+        </div>
+        <div id="lancamentos" class="content-section">
+            <h1>Lançamentos</h1>
+            <hr>
+            <form id="launchForm">
+                <table class="launch-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Patrimônio</th>
+                            <th>Data Pgto.</th>
+                            <th>Tipo Lcto.</th>
+                            <th>Grupo</th>
+                            <th>Classificação</th>
+                            <th>Breve Histórico</th>
+                            <th>Tipo</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="date" id="data"></td>
+                            <td><input type="number" id="valor"></td>
+                            <td><input type="text" id="patrimonio"></td>
+                            <td><input type="date" id="dataPgto"></td>
+                            <td><input type="text" id="tipoLcto"></td>
+                            <td><input type="text" id="grupo"></td>
+                            <td><input type="text" id="classificacao"></td>
+                            <td><input type="text" id="historico"></td>
+                            <td><input type="text" id="tipo"></td>
+                            <td class="actions">
+                                <button type="button" class="save-btn" onclick="saveLaunch()">Lançar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <h2>Lançamentos Salvos</h2>
+            <div class="launch-table-container">
+                <table class="launch-table" id="savedLaunchesTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Data <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterDataDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterDataDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterDataDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Valor <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterValorDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterValorDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterValorDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Patrimônio <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterPatrimonioDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterPatrimonioDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterPatrimonioDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Data Pgto. <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterDataPgtoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterDataPgtoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterDataPgtoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Tipo Lcto. <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterTipoLctoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterTipoLctoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterTipoLctoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Grupo <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterGrupoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterGrupoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterGrupoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Classificação <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterClassificacaoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterClassificacaoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterClassificacaoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Breve Histórico <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterHistoricoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterHistoricoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterHistoricoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-dropdown">
+                                    Tipo <i class="fas fa-filter"
+                                        onclick="toggleFilterDropdown(event, 'filterTipoDropdown')"></i>
+                                    <div class="filter-dropdown-content" id="filterTipoDropdown">
+                                        <label><input type="checkbox"
+                                                onclick="toggleAllFilters('filterTipoDropdown', this)"> Marcar
+                                            Todos</label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="savedLaunchesBody">
+                        <!-- Conteúdo gerado dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="planejamento" class="content-section">
+            <h1>Planejamento</h1>
+            <hr>
+
+            <div class="section-title">Planejamento de Rendas</div>
+            <div class="launch-table-container">
+                <table class="launch-table" id="rendaTable">
+                    <thead>
+                        <tr>
+                            <th>Rendas</th>
+                            <th>Jan</th>
+                            <th>Fev</th>
+                            <th>Mar</th>
+                            <th>Abr</th>
+                            <th>Mai</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Ago</th>
+                            <th>Set</th>
+                            <th>Out</th>
+                            <th>Nov</th>
+                            <th>Dez</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rendaTableBody">
+                        <!-- Linhas preenchidas dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-title">Planejamento de Gastos</div>
+            <div class="launch-table-container">
+                <table class="launch-table" id="gastosTable">
+                    <thead>
+                        <tr>
+                            <th>Gastos</th>
+                            <th>Jan</th>
+                            <th>Fev</th>
+                            <th>Mar</th>
+                            <th>Abr</th>
+                            <th>Mai</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Ago</th>
+                            <th>Set</th>
+                            <th>Out</th>
+                            <th>Nov</th>
+                            <th>Dez</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gastosTableBody">
+                        <!-- Linhas preenchidas dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="resultadoAno" class="content-section">
+            <h1>Resultado por Ano</h1>
+        </div>
+        <div id="balanco" class="content-section">
+            <h1>Balanço</h1>
+        </div>
+        <div id="previstoVsRealizado" class="content-section">
+            <h1>Previsto vs Realizado</h1>
+        </div>
+        <div id="fluxoDeCaixa" class="content-section">
+            <h1>Fluxo de Caixa</h1>
+        </div>
+        <div id="configuracoes" class="content-section">
+            <h1>Configurações</h1>
+        </div>
+        <div id="suporte" class="content-section">
+            <h1>Suporte ao Cliente</h1>
+        </div>
+        <div class="footer">
+            <a href="#">Política de Privacidade</a> |
+            <a href="#">Termos de Serviço</a> |
+            <a href="#">Ajuda</a>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Título do Modal</h2>
+            <form id="modalForm">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th id="modalValueColumn" style="display:none;">Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalTableBody">
+                    </tbody>
+                </table>
+                <button type="button" class="add-row-btn" id="addRowBtn" onclick="addTableRow()">Adicionar
+                    Linha</button>
+                <button type="button" class="save-btn" onclick="saveContent()">Salvar</button>
+                <button type="button" class="close-btn" onclick="closeModal()">Fechar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeCharts();
+            updateCardCounts();
+            loadStartDate();
+        });
+
+        function openAddModal(cardTitle, hasValue) {
+            document.getElementById('modalTitle').innerText = cardTitle;
+            document.getElementById('modalTableBody').innerHTML = `
+                <tr>
+                    <td><input type="text" placeholder="Descrição"></td>
+                    ${hasValue ? '<td><input type="number" placeholder="Valor"></td>' : '<td style="display:none;"></td>'}
+                    <td></td>
+                </tr>
+            `;
+            if (hasValue) {
+                document.getElementById('modalValueColumn').style.display = 'table-cell';
+            } else {
+                document.getElementById('modalValueColumn').style.display = 'none';
+            }
+            document.getElementById('addRowBtn').style.display = 'block';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function openViewModal(cardTitle, data, hasValue) {
+            document.getElementById('modalTitle').innerText = cardTitle;
+            document.getElementById('modalTableBody').innerHTML = '';
+            data.forEach(item => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" value="${item.descricao}" placeholder="Descrição" disabled></td>
+                    ${hasValue ? `<td><input type="number" value="${item.valor}" placeholder="Valor" disabled></td>` : '<td style="display:none;"></td>'}
+                    <td>
+                        <button type="button" class="edit-btn" onclick="enableEdit(this)">Editar</button>
+                        <button type="button" class="delete-btn" onclick="deleteTableRow(this)">Excluir</button>
+                    </td>
+                `;
+                document.getElementById('modalTableBody').appendChild(newRow);
+            });
+            if (hasValue) {
+                document.getElementById('modalValueColumn').style.display = 'table-cell';
+            } else {
+                document.getElementById('modalValueColumn').style.display = 'none';
+            }
+            document.getElementById('addRowBtn').style.display = 'none';
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function addTableRow() {
+            const tableBody = document.getElementById('modalTableBody');
+            const cardTitle = document.getElementById('modalTitle').innerText;
+            const hasValue = document.getElementById('modalValueColumn').style.display !== 'none';
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" placeholder="Descrição"></td>
+                ${hasValue ? '<td><input type="number" placeholder="Valor"></td>' : '<td style="display:none;"></td>'}
+                <td></td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        function enableEdit(button) {
+            const row = button.closest('tr');
+            row.querySelector('input[type="text"]').removeAttribute('disabled');
+            const valueInput = row.querySelector('input[type="number"]');
+            if (valueInput) {
+                valueInput.removeAttribute('disabled');
+            }
+            button.innerText = 'Salvar';
+            button.setAttribute('onclick', 'saveTableRow(this)');
+        }
+
+        function saveTableRow(button) {
+            const row = button.closest('tr');
+            row.querySelector('input[type="text"]').setAttribute('disabled', 'disabled');
+            const valueInput = row.querySelector('input[type="number"]');
+            if (valueInput) {
+                valueInput.setAttribute('disabled', 'disabled');
+            }
+            button.innerText = 'Editar';
+            button.setAttribute('onclick', 'enableEdit(this)');
+            showNotification('Salvo.', 'success');
+        }
+
+        function deleteTableRow(button) {
+            const row = button.closest('tr');
+            row.remove();
+            showNotification('Excluído.', 'error');
+        }
+
+        function viewContent(cardTitle) {
+            const savedData = localStorage.getItem(cardTitle);
+            const hasValue = cardTitle === 'Disponibilidades' || cardTitle === 'Investimentos' || cardTitle === 'Imobilizado' || cardTitle === 'Cartões' || cardTitle === 'Empréstimos' || cardTitle === 'Financiamentos';
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                openViewModal(cardTitle, data, hasValue);
+            } else {
+                alert('Nenhum conteúdo salvo para ' + cardTitle);
+            }
+        }
+
+        function saveContent() {
+            const cardTitle = document.getElementById('modalTitle').innerText;
+            const hasValue = document.getElementById('modalValueColumn').style.display !== 'none';
+            const rows = document.querySelectorAll('#modalTableBody tr');
+            const data = Array.from(rows).map(row => {
+                return {
+                    descricao: row.querySelector('input[type="text"]').value,
+                    valor: hasValue ? row.querySelector('input[type="number"]').value : undefined
+                };
+            });
+            localStorage.setItem(cardTitle, JSON.stringify(data));
+            updateCardCounts();
+            closeModal();
+            showNotification('Salvo.', 'success');
+
+            // Atualizar Planejamento após salvar os dados
+            updatePlanningTable(cardTitle, data);
+        }
+
+        function updatePlanningTable(cardTitle, data) {
+            const planningTableBody = (cardTitle.includes('Renda')) ? document.getElementById('rendaTableBody') : document.getElementById('gastosTableBody');
+
+            planningTableBody.innerHTML = ''; // Limpa a tabela de Planejamento
+
+            data.forEach(item => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><input type="text" value="${item.descricao}" readonly></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td><input type="number" class="monthly-input" value="0"></td>
+                    <td class="total-sum">0</td>
+                `;
+                planningTableBody.appendChild(newRow);
+            });
+        }
+
+        function updateCardCounts() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const cardTitle = card.getAttribute('data-title');
+                const savedData = localStorage.getItem(cardTitle);
+                const count = savedData ? JSON.parse(savedData).length : 0;
+                document.getElementById(`count-${cardTitle}`).innerText = count;
+            });
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            const menuItems = document.querySelectorAll('.menu-item');
+            sections.forEach(section => section.classList.remove('active'));
+            menuItems.forEach(item => item.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`.menu-item[onclick="showSection('${sectionId}')"]`).classList.add('active');
+        }
+
+        function initializeCharts() {
+            const ctxBalance = document.getElementById('balanceChart').getContext('2d');
+            new Chart(ctxBalance, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Saldo Mensal',
+                        data: [4000, 4200, 4500, 4700, 4900, 5200],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        fill: true
+                    }]
+                }
+            });
+
+            const ctxTransactions = document.getElementById('transactionsChart').getContext('2d');
+            new Chart(ctxTransactions, {
+                type: 'bar',
+                data: {
+                    labels: ['Compra A', 'Compra B', 'Compra C'],
+                    datasets: [{
+                        label: 'Transações Recentes',
+                        data: [200, 150, 300],
+                        backgroundColor: '#28a745',
+                    }]
+                }
+            });
+
+            const ctxWaterfall = document.getElementById('waterfallChart').getContext('2d');
+            new Chart(ctxWaterfall, {
+                type: 'bar',
+                data: {
+                    labels: ['Saldo Inicial', 'Receitas', 'Despesas', 'Saldo Final'],
+                    datasets: [{
+                        label: 'Gráfico de Cascata',
+                        data: [5000, 3000, -1500, 3500],
+                        backgroundColor: ['#007bff', '#28a745', '#dc3545', '#6c757d']
+                    }]
+                }
+            });
+
+            const ctxExpensesIncome = document.getElementById('expensesIncomeChart').getContext('2d');
+            new Chart(ctxExpensesIncome, {
+                type: 'pie',
+                data: {
+                    labels: ['Despesas', 'Receitas'],
+                    datasets: [{
+                        label: 'Despesas e Receitas',
+                        data: [3000, 7000],
+                        backgroundColor: ['#dc3545', '#28a745'],
+                    }]
+                }
+            });
+
+            const ctxInvestmentPerformance = document.getElementById('investmentPerformanceChart').getContext('2d');
+            new Chart(ctxInvestmentPerformance, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Desempenho dos Investimentos',
+                        data: [5, 6, 7, 6.5, 7.5, 8],
+                        borderColor: '#ff6347',
+                        backgroundColor: 'rgba(255, 99, 71, 0.1)',
+                        fill: true
+                    }]
+                }
+            });
+
+            const ctxLoans = document.getElementById('loansChart').getContext('2d');
+            new Chart(ctxLoans, {
+                type: 'bar',
+                data: {
+                    labels: ['Empréstimo A', 'Empréstimo B'],
+                    datasets: [{
+                        label: 'Pagamentos de Empréstimos',
+                        data: [500, 500],
+                        backgroundColor: '#17a2b8',
+                    }]
+                }
+            });
+
+            const ctxSavings = document.getElementById('savingsChart').getContext('2d');
+            new Chart(ctxSavings, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Economia Mensal',
+                        data: [100, 200, 300, 150, 250, 200],
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        fill: true
+                    }]
+                }
+            });
+
+            const ctxExpensesComparison = document.getElementById('expensesComparisonChart').getContext('2d');
+            new Chart(ctxExpensesComparison, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Alimentação', 'Transporte', 'Outros'],
+                    datasets: [{
+                        label: 'Comparativo de Despesas',
+                        data: [30, 20, 50],
+                        backgroundColor: ['#fd7e14', '#6610f2', '#20c997'],
+                    }]
+                }
+            });
+
+            const ctxRevenueProjection = document.getElementById('revenueProjectionChart').getContext('2d');
+            new Chart(ctxRevenueProjection, {
+                type: 'bar',
+                data: {
+                    labels: ['2024', '2025', '2026'],
+                    datasets: [{
+                        label: 'Projeção de Receita',
+                        data: [10000, 11000, 12100],
+                        backgroundColor: '#6f42c1',
+                    }]
+                }
+            });
+        }
+
+        function saveLaunch() {
+            const data = document.getElementById('data').value;
+            const valor = document.getElementById('valor').value;
+            const patrimonio = document.getElementById('patrimonio').value;
+            const dataPgto = document.getElementById('dataPgto').value;
+            const tipoLcto = document.getElementById('tipoLcto').value;
+            const grupo = document.getElementById('grupo').value;
+            const classificacao = document.getElementById('classificacao').value;
+            const historico = document.getElementById('historico').value;
+            const tipo = document.getElementById('tipo').value;
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${data}</td>
+                <td>${valor}</td>
+                <td>${patrimonio}</td>
+                <td>${dataPgto}</td>
+                <td>${tipoLcto}</td>
+                <td>${grupo}</td>
+                <td>${classificacao}</td>
+                <td>${historico}</td>
+                <td>${tipo}</td>
+                <td class="actions">
+                    <button type="button" class="edit-btn" onclick="editLaunch(this)">Editar</button>
+                    <button type="button" class="delete-btn" onclick="deleteLaunch(this)">Excluir</button>
+                </td>
+            `;
+            document.getElementById('savedLaunchesBody').appendChild(newRow);
+
+            document.getElementById('launchForm').reset();
+
+            showNotification('Lançado.', 'success');
+            addFilterOptions('filterDataDropdown', data);
+            addFilterOptions('filterValorDropdown', valor);
+            addFilterOptions('filterPatrimonioDropdown', patrimonio);
+            addFilterOptions('filterDataPgtoDropdown', dataPgto);
+            addFilterOptions('filterTipoLctoDropdown', tipoLcto);
+            addFilterOptions('filterGrupoDropdown', grupo);
+            addFilterOptions('filterClassificacaoDropdown', classificacao);
+            addFilterOptions('filterHistoricoDropdown', historico);
+            addFilterOptions('filterTipoDropdown', tipo);
+        }
+
+        function addFilterOptions(dropdownId, value) {
+            const dropdownContent = document.getElementById(dropdownId);
+            const existingOptions = dropdownContent.querySelectorAll('label');
+            for (let option of existingOptions) {
+                if (option.textContent.trim() === value.trim()) {
+                    return;
+                }
+            }
+            if (value) {
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" value="${value}" onclick="filterTable()"> ${value}`;
+                dropdownContent.appendChild(label);
+            }
+        }
+
+        function editLaunch(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < cells.length - 1) {
+                    const input = document.createElement('input');
+                    input.value = cell.innerText;
+                    cell.innerText = '';
+                    cell.appendChild(input);
+                }
+            });
+            button.innerText = 'Salvar';
+            button.setAttribute('onclick', 'saveEditedLaunch(this)');
+        }
+
+        function saveEditedLaunch(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            cells.forEach((cell, index) => {
+                if (index < cells.length - 1) {
+                    cell.innerText = cell.querySelector('input').value;
+                }
+            });
+            button.innerText = 'Editar';
+            button.setAttribute('onclick', 'editLaunch(this)');
+            showNotification('Editado.', 'success');
+        }
+
+        function deleteLaunch(button) {
+            const row = button.closest('tr');
+            row.remove();
+            showNotification('Excluído.', 'error');
+        }
+
+        function toggleFilterDropdown(event, dropdownId) {
+            event.stopPropagation();
+            document.querySelectorAll('.filter-dropdown-content').forEach(el => el.classList.remove('show'));
+            document.getElementById(dropdownId).classList.toggle('show');
+        }
+
+        function toggleAllFilters(dropdownId, checkbox) {
+            const checkboxes = document.querySelectorAll(`#${dropdownId} input[type="checkbox"]`);
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+            filterTable();
+        }
+
+        function filterTable() {
+            const filterData = getSelectedFilters('filterDataDropdown');
+            const filterValor = getSelectedFilters('filterValorDropdown');
+            const filterPatrimonio = getSelectedFilters('filterPatrimonioDropdown');
+            const filterDataPgto = getSelectedFilters('filterDataPgtoDropdown');
+            const filterTipoLcto = getSelectedFilters('filterTipoLctoDropdown');
+            const filterGrupo = getSelectedFilters('filterGrupoDropdown');
+            const filterClassificacao = getSelectedFilters('filterClassificacaoDropdown');
+            const filterHistorico = getSelectedFilters('filterHistoricoDropdown');
+            const filterTipo = getSelectedFilters('filterTipoDropdown');
+
+            const rows = document.querySelectorAll('#savedLaunchesBody tr');
+            rows.forEach(row => {
+                const data = row.cells[0].innerText.toLowerCase();
+                const valor = row.cells[1].innerText.toLowerCase();
+                const patrimonio = row.cells[2].innerText.toLowerCase();
+                const dataPgto = row.cells[3].innerText.toLowerCase();
+                const tipoLcto = row.cells[4].innerText.toLowerCase();
+                const grupo = row.cells[5].innerText.toLowerCase();
+                const classificacao = row.cells[6].innerText.toLowerCase();
+                const historico = row.cells[7].innerText.toLowerCase();
+                const tipo = row.cells[8].innerText.toLowerCase();
+
+                const matchesData = !filterData.length || filterData.includes(data);
+                const matchesValor = !filterValor.length || filterValor.includes(valor);
+                const matchesPatrimonio = !filterPatrimonio.length || filterPatrimonio.includes(patrimonio);
+                const matchesDataPgto = !filterDataPgto.length || filterDataPgto.includes(dataPgto);
+                const matchesTipoLcto = !filterTipoLcto.length || filterTipoLcto.includes(tipoLcto);
+                const matchesGrupo = !filterGrupo.length || filterGrupo.includes(grupo);
+                const matchesClassificacao = !filterClassificacao.length || filterClassificacao.includes(classificacao);
+                const matchesHistorico = !filterHistorico.length || filterHistorico.includes(historico);
+                const matchesTipo = !filterTipo.length || filterTipo.includes(tipo);
+
+                if (matchesData && matchesValor && matchesPatrimonio && matchesDataPgto && matchesTipoLcto && matchesGrupo && matchesClassificacao && matchesHistorico && matchesTipo) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function getSelectedFilters(dropdownId) {
+            const selectedOptions = [];
+            const checkboxes = document.querySelectorAll(`#${dropdownId} input[type="checkbox"]`);
+            checkboxes.forEach(cb => {
+                if (cb.checked && cb !== checkboxes[0]) {
+                    selectedOptions.push(cb.value.toLowerCase());
+                }
+            });
+            return selectedOptions;
+        }
+
+        document.addEventListener('input', function (event) {
+            if (event.target.classList.contains('monthly-input')) {
+                const row = event.target.closest('tr');
+                let total = 0;
+
+                row.querySelectorAll('.monthly-input').forEach(input => {
+                    total += parseFloat(input.value) || 0;
+                });
+
+                row.querySelector('.total-sum').innerText = total.toFixed(2);
+            }
+        });
+
+        function saveStartDate() {
+            const startDate = document.getElementById('startDate').value;
+            localStorage.setItem('startDate', startDate);
+            document.getElementById('displayStartDate').innerText = 'Data de Início: ' + new Date(startDate).toLocaleDateString('pt-BR');
+        }
+
+        function loadStartDate() {
+            const startDate = localStorage.getItem('startDate');
+            if (startDate) {
+                document.getElementById('startDate').value = startDate;
+                document.getElementById('displayStartDate').innerText = 'Data de Início: ' + new Date(startDate).toLocaleDateString('pt-BR');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+            notification.style.borderLeft = type === 'success' ? '5px solid #28a745' : '5px solid #dc3545';
+            notification.innerText = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            }, 100);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.filter-dropdown-content').forEach(el => el.classList.remove('show'));
+        });
+    </script>
+</body>
+
+</html>
